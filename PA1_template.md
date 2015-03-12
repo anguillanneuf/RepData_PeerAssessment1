@@ -3,7 +3,8 @@
 #### Loading and preprocessing the data  
 1. Load the data.  
 2. Process/transform the data.  
-```{r load and preprocess data}
+
+```r
 	act <- read.csv("activity.csv", header=T)
 	act$date <- as.Date(act$date, "%Y-%m-%d")
 ```
@@ -11,31 +12,43 @@
 #### What is mean total number of steps taken per day?
 1. Make a histogram of the total number of steps taken each day.  
 2. Report the mean and median total number of steps taken per day.  
-```{r steps per day}
+
+```r
 	byday <- aggregate(steps ~ date, data = act, sum, na.remove=T)
 	hist(byday$steps, col="purple", 
 		main="Histogram of Daily Steps", 
 		xlab="Daily Steps Count")
+```
+
+![plot of chunk steps per day](figure/steps per day-1.png) 
+
+```r
 	mean1 <- mean(byday$steps)
 	median1 <- median(byday$steps)
 ```
-The mean total number of steps taken per day is `r mean1`.  
-The median total number of stetps taken per day is `r median1`.
+The mean total number of steps taken per day is 1.0767189 &times; 10<sup>4</sup>.  
+The median total number of stetps taken per day is 10766.
 
 #### What is the average daily activity pattern?  
 1. Make a time series plot of the 5-minute interval and 
 the average number of steps taken, averaged across all days (y-axis).   
 2. Which 5-minute interval, on average across all the days in the dataset, 
 contains the maximum number of steps?  
-```{r daily pattern}
+
+```r
 	byinterval <- aggregate(steps ~ interval, data = act, mean, na.remove=T)
 	plot(byinterval$interval, byinterval$steps, type="l",
 		main = "Average Daily Activitiy Pattern",
 		xlab = "Intervals",
 		ylab = "Average Steps")
+```
+
+![plot of chunk daily pattern](figure/daily pattern-1.png) 
+
+```r
 	max <- byinterval$interval[which(byinterval$step == max(byinterval$steps))]
 ```
-The interval containing the maxinum number of steps is `r max`.
+The interval containing the maxinum number of steps is 835.
 
 #### Imputing missing values  
 
@@ -46,7 +59,8 @@ The interval containing the maxinum number of steps is `r max`.
 report the mean and median total number of steps taken per day. 
 Do these values differ from the estimates from Part I of the assignment? 
 What is the impact of imputing missing data on the estimates?
-```{r impute missing values}
+
+```r
 	act2 <- act	
 	totalMissing <- sum(is.na(act2$steps))
 	missing <- which(is.na(act$steps))
@@ -65,12 +79,17 @@ What is the impact of imputing missing data on the estimates?
 	hist(byday2$steps, col="red", 
 		main="Histogram of Daily Steps with Imputed Data", 
 		xlab="Daily Steps Count")
+```
+
+![plot of chunk impute missing values](figure/impute missing values-1.png) 
+
+```r
 	mean2 <- mean(byday2$steps)
 	median2 <- median(byday2$steps)
 ```
-The total number of missing values is `r totalMissing`.  
-The mean total number of steps by day in the imputed dataset is `r mean2`.  
-The median total number of steps by day in the imputed dataset is `r median2`.  
+The total number of missing values is 2304.  
+The mean total number of steps by day in the imputed dataset is 1.0766189 &times; 10<sup>4</sup>.  
+The median total number of steps by day in the imputed dataset is 1.0766189 &times; 10<sup>4</sup>.  
 They are different from the first part of the assignment.  
 The impact of imputing missing data have changed both the mean and median.  
 
@@ -78,7 +97,8 @@ The impact of imputing missing data have changed both the mean and median.
 1. Create a new factor variable with two levels -- "weekday" and "weekend".  
 2. Make a panel plot containing a time series plot of the 5-minute interval
 and the average number of steps taken, averaged across all weekdays/weekends.  
-```{r weekdays vs. weekends}
+
+```r
 	day <- weekdays(act2$date)
 	act3 <- cbind(act2, day)
 	day <- gsub("Monday", "Weekday", day)
@@ -95,3 +115,5 @@ and the average number of steps taken, averaged across all weekdays/weekends.
 	xyplot(steps ~ interval | day, data = byweekday, type = "l", 
 		xlab = "Interval", ylab = "Number of steps", layout = c(1,2))
 ```
+
+![plot of chunk weekdays vs. weekends](figure/weekdays vs. weekends-1.png) 
